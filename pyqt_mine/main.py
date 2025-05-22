@@ -145,9 +145,7 @@ def SetMines(iRow,iCol):
 def IfExistMineInCurrentCol(icol):
     global chessnum
     global sChessmine
-    i = 0
     for i in range(chessnum):
-        print("i:" + str(i) + " " + str(sChessmine[i][icol].bMineType))
         if sChessmine[i][icol].bMineType == True:
             return True
     return False
@@ -161,6 +159,7 @@ class MainWindow(QMainWindow):
         # 设置主窗口
         self.setWindowTitle('扫雷')
         self.setGeometry(100, 100, EASY_SCREEN_SIZE_W, EASY_SCREEN_SIZE_H)
+        self.setWindowIcon(QIcon('logo.ico'))
         self.setWindowFlags(Qt.WindowMinimizeButtonHint|Qt.WindowCloseButtonHint)
         #self.setFixedSize(self.width(), self.height());
         
