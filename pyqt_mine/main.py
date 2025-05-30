@@ -675,9 +675,9 @@ class CanvasWidget(QWidget):
         iLinenum = (chessnum + 1) * 2;
         for i in range(iLinenum):
             if i < iLinenum / 2:
-                painter.drawLine(hx1,hy1 + bh * i,hx1 + bw * chessnum,hy1 + bh * i)
+                painter.drawLine(hx1,int(hy1 + bh * i),int(hx1 + bw * chessnum),int(hy1 + bh * i))
             else:
-                painter.drawLine(hx1 + bw * (i - iLinenum / 2),hy1,hx1 + bw * (i - iLinenum / 2),hy1 + bh * chessnum)
+                painter.drawLine(int(hx1 + bw * (i - iLinenum / 2)),int(hy1),int(hx1 + bw * (i - iLinenum / 2)),int(hy1 + bh * chessnum))
         
         for i in range(chessnum):
             for j in range(chessnum):
