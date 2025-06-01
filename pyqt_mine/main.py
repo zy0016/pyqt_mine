@@ -10,6 +10,9 @@ from PyQt5.QtCore import QTranslator
 from enum import Enum
 import random
 
+class LANGUAGE(Enum):
+    English = 0
+    Chinese = 1
 class GridType(Enum):
     GRID_NORMAL = 0
     GRID_FLAG = 1
@@ -157,7 +160,7 @@ class MainWindow(QMainWindow):
     English = 0
     #0:english
     #1:chinese
-    Language = 0
+    Language = LANGUAGE.English
     def __init__(self,a,en,ch):
         super().__init__()
         self.app = a
@@ -166,7 +169,7 @@ class MainWindow(QMainWindow):
         self.initUI()
         
     def setText(self):
-        if self.Language == 0:
+        if self.Language == LANGUAGE.English:
             self.app.installTranslator(self.English)
             self.En.setChecked(True)
             self.Ch.setChecked(False)
@@ -284,11 +287,11 @@ class MainWindow(QMainWindow):
         self.canvas.GameFail.connect(self.slot_GameFail)
         
     def ChineseFunc(self):
-        self.Language = 1
+        self.Language = LANGUAGE.Chinese
         self.setText()
     
     def EnglishFunc(self):
-        self.Language = 0
+        self.Language = LANGUAGE.English
         self.setText()
     
     def quitFunc(self):
@@ -341,10 +344,10 @@ class MainWindow(QMainWindow):
             "background-position:center;\n"
             "background-repeat:no-repeat;\n"
             "}" % self.img_path_s1)
-                
+
     def aboutFunc(self):
         trans = QTranslator()
-        if self.Language == 0:
+        if self.Language == LANGUAGE.English:
             self.app.installTranslator(self.English)
         else:
             self.app.installTranslator(self.Chinese)
@@ -381,9 +384,6 @@ class MainWindow(QMainWindow):
         self.lcd2.display(c)
 
     def ButtonNewGame(self):
-        print("ButtonNewGame");
-        global mainwidth
-        global mainheight
         global level
         if level == CHESS_DIFFICULTY.Difficult_Easy:
             self.easyFunc()
