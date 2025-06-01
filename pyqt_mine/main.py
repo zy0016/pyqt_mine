@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QTranslator
 from enum import Enum
 import random
-
+#C:\Users\y36zhao\code\git\pyqt_mine\pyqt_mine>pylupdate5 main.py -ts zh_CN.ts en_us.ts
 class LANGUAGE(Enum):
     English = 0
     Chinese = 1
