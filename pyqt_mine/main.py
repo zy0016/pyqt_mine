@@ -167,14 +167,13 @@ class MainWindow(QMainWindow):
         
     def setText(self):
         if self.Language == 0:
-            trans = QTranslator()
-            trans.load('./en_us.qm')
             self.app.installTranslator(self.English)
+            self.En.setChecked(True)
+            self.Ch.setChecked(False)
         else:
-            trans = QTranslator()
-            trans.load('./zh_CN.qm')
             self.app.installTranslator(self.Chinese)
-        
+            self.En.setChecked(False)
+            self.Ch.setChecked(True)
         
         self.setWindowTitle(self.tr('mine'))
         self.file_menu.setTitle(self.tr("File"))
@@ -198,25 +197,27 @@ class MainWindow(QMainWindow):
         self.menubar = self.menuBar()
         self.file_menu = self.menubar.addMenu(self.tr("File"))
         
-        self.Easy = QAction(self.tr("Easy"),self)
+        self.Easy = QAction(self.tr("Easy"),self,checkable=True)
         self.Easy.triggered.connect(self.easyFunc)
+        self.Easy.setChecked(True)
         self.file_menu.addAction(self.Easy)
     
-        self.Middle = QAction(self.tr("Middle"),self)
+        self.Middle = QAction(self.tr("Middle"),self,checkable=True)
         self.Middle.triggered.connect(self.middleFunc)
         self.file_menu.addAction(self.Middle)
         
-        self.Hard = QAction(self.tr("Hard"),self)
+        self.Hard = QAction(self.tr("Hard"),self,checkable=True)
         self.Hard.triggered.connect(self.hardFunc)
         self.file_menu.addAction(self.Hard)
         
-        Ch = QAction("中文",self)
-        Ch.triggered.connect(self.ChineseFunc)
-        self.file_menu.addAction(Ch)
+        self.Ch = QAction("中文",self,checkable=True)
+        self.Ch.triggered.connect(self.ChineseFunc)
+        self.file_menu.addAction(self.Ch)
         
-        En = QAction("English",self)
-        En.triggered.connect(self.EnglishFunc)
-        self.file_menu.addAction(En)
+        self.En = QAction("English",self,checkable=True)
+        self.En.triggered.connect(self.EnglishFunc)
+        self.En.setChecked(True)
+        self.file_menu.addAction(self.En)
         
         self.About = QAction(self.tr("About"),self)
         self.About.triggered.connect(self.aboutFunc)
@@ -294,6 +295,9 @@ class MainWindow(QMainWindow):
         quit()
         
     def easyFunc(self):
+        self.Easy.setChecked(True)
+        self.Middle.setChecked(False)
+        self.Hard.setChecked(False)
         mainwidth = EASY_SCREEN_SIZE_W
         mainheight = EASY_SCREEN_SIZE_H
         self.setGeometry(100, 100, EASY_SCREEN_SIZE_W, EASY_SCREEN_SIZE_H)
@@ -307,6 +311,9 @@ class MainWindow(QMainWindow):
             "}" % self.img_path_s1)
 
     def middleFunc(self):
+        self.Easy.setChecked(False)
+        self.Middle.setChecked(True)
+        self.Hard.setChecked(False)
         mainwidth = MID_SCREEN_SIZE_W
         mainheight = MID_SCREEN_SIZE_H
         self.setGeometry(100, 100, MID_SCREEN_SIZE_W, MID_SCREEN_SIZE_H)
@@ -320,6 +327,9 @@ class MainWindow(QMainWindow):
             "}" % self.img_path_s1)
             
     def hardFunc(self):
+        self.Easy.setChecked(False)
+        self.Middle.setChecked(False)
+        self.Hard.setChecked(True)
         mainwidth = HARD_SCREEN_SIZE_W
         mainheight = HARD_SCREEN_SIZE_H
         self.setGeometry(100, 100, HARD_SCREEN_SIZE_W, HARD_SCREEN_SIZE_H)
@@ -335,9 +345,9 @@ class MainWindow(QMainWindow):
     def aboutFunc(self):
         trans = QTranslator()
         if self.Language == 0:
-            trans.load('./en_us.qm')
+            self.app.installTranslator(self.English)
         else:
-            trans.load('./zh_CN.qm')
+            self.app.installTranslator(self.Chinese)
         
         self.app.installTranslator(trans)
         QMessageBox.about(self,self.tr("About"),self.tr("1.0 version Copyright 03-28-2025 zhaoyong"))
@@ -375,15 +385,12 @@ class MainWindow(QMainWindow):
         global mainwidth
         global mainheight
         global level
-        self.setGeometry(100, 100, mainwidth, mainheight)
-        self.InitChessman(level)
-        self.canvas.updateCanvas()
-        self.slot_StopAndClearTimer()
-        self.button.setStyleSheet("QPushButton{\n"
-            "background-image: url(\"%s\");\n"
-            "background-position:center;\n"
-            "background-repeat:no-repeat;\n"
-            "}" % self.img_path_s1)
+        if level == CHESS_DIFFICULTY.Difficult_Easy:
+            self.easyFunc()
+        elif level == CHESS_DIFFICULTY.Difficult_Middle:
+            self.middleFunc()
+        else:
+            self.hardFunc()
 
     def InitChessman(self,chess_level):
         global RowCount
@@ -575,48 +582,7 @@ class MainWindow(QMainWindow):
 #        print("minucount:" + str(minucount))
             
     def processtrigger(self,q):
-        global mainwidth
-        global mainheight
         print(q.text()+" is triggered")
-        if q.text() == "Exit":
-            quit();
-        elif q.text() == 'Easy':
-            mainwidth = EASY_SCREEN_SIZE_W
-            mainheight = EASY_SCREEN_SIZE_H
-            self.setGeometry(100, 100, EASY_SCREEN_SIZE_W, EASY_SCREEN_SIZE_H)
-            self.InitChessman(CHESS_DIFFICULTY.Difficult_Easy)
-            self.canvas.updateCanvas()
-            self.slot_StopAndClearTimer()
-            self.button.setStyleSheet("QPushButton{\n"
-                "background-image: url(\"%s\");\n"
-                "background-position:center;\n"
-                "background-repeat:no-repeat;\n"
-                "}" % self.img_path_s1)
-        elif q.text() == 'Middle':
-            mainwidth = MID_SCREEN_SIZE_W
-            mainheight = MID_SCREEN_SIZE_H
-            self.setGeometry(100, 100, MID_SCREEN_SIZE_W, MID_SCREEN_SIZE_H)
-            self.InitChessman(CHESS_DIFFICULTY.Difficult_Middle)
-            self.canvas.updateCanvas()
-            self.slot_StopAndClearTimer()
-            self.button.setStyleSheet("QPushButton{\n"
-                "background-image: url(\"%s\");\n"
-                "background-position:center;\n"
-                "background-repeat:no-repeat;\n"
-                "}" % self.img_path_s1)
-        elif q.text() == 'Hard':
-            mainwidth = HARD_SCREEN_SIZE_W
-            mainheight = HARD_SCREEN_SIZE_H
-            self.setGeometry(100, 100, HARD_SCREEN_SIZE_W, HARD_SCREEN_SIZE_H)
-            self.InitChessman(CHESS_DIFFICULTY.Difficult_Hard)
-            self.canvas.updateCanvas()
-            self.slot_StopAndClearTimer()
-            self.button.setStyleSheet("QPushButton{\n"
-                "background-image: url(\"%s\");\n"
-                "background-position:center;\n"
-                "background-repeat:no-repeat;\n"
-                "}" % self.img_path_s1)
-        
 
 class CanvasWidget(QWidget):
     GameStart = pyqtSignal(str)
