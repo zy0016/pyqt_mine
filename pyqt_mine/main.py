@@ -6,6 +6,7 @@ from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QPainter, QColor
 from PyQt5.Qt import *
 from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtCore import QTranslator
 from enum import Enum
 import random
 
@@ -151,13 +152,41 @@ def IfExistMineInCurrentCol(icol):
     return False
         
 class MainWindow(QMainWindow):
-    def __init__(self):
+    app = None
+    Chinese = None
+    English = 0
+    #0:english
+    #1:chinese
+    Language = 0
+    def __init__(self,a,en,ch):
         super().__init__()
+        self.app = a
+        self.Chinese = ch
+        self.English = en
         self.initUI()
+        
+    def setText(self):
+        if self.Language == 0:
+            trans = QTranslator()
+            trans.load('./en_us.qm')
+            self.app.installTranslator(self.English)
+        else:
+            trans = QTranslator()
+            trans.load('./zh_CN.qm')
+            self.app.installTranslator(self.Chinese)
+        
+        
+        self.setWindowTitle(self.tr('mine'))
+        self.file_menu.setTitle(self.tr("File"))
+        self.Easy.setText(self.tr("Easy"))
+        self.Middle.setText(self.tr("Middle"))
+        self.Hard.setText(self.tr("Hard"))
+        self.About.setText(self.tr("About"))
+        self.Quit.setText(self.tr("Exit"))
         
     def initUI(self):
         # 设置主窗口
-        self.setWindowTitle('扫雷')
+        self.setWindowTitle(self.tr('mine'))
         self.setGeometry(100, 100, EASY_SCREEN_SIZE_W, EASY_SCREEN_SIZE_H)
         self.setWindowIcon(QIcon('logo.ico'))
         self.setWindowFlags(Qt.WindowMinimizeButtonHint|Qt.WindowCloseButtonHint)
@@ -166,29 +195,37 @@ class MainWindow(QMainWindow):
         self.img_path_s1 = "s1.png"
         self.img_path_s2 = "s2.png"
         # 创建菜单栏
-        menubar = self.menuBar()
-        file_menu = menubar.addMenu(self.tr("File"))
+        self.menubar = self.menuBar()
+        self.file_menu = self.menubar.addMenu(self.tr("File"))
         
-        file_menu.addAction(self.tr("Easy"))
+        self.Easy = QAction(self.tr("Easy"),self)
+        self.Easy.triggered.connect(self.easyFunc)
+        self.file_menu.addAction(self.Easy)
     
-        Middle = QAction(self.tr("Middle"),self)
-        file_menu.addAction(Middle)
+        self.Middle = QAction(self.tr("Middle"),self)
+        self.Middle.triggered.connect(self.middleFunc)
+        self.file_menu.addAction(self.Middle)
         
-        Hard = QAction(self.tr("Hard"),self)
-        file_menu.addAction(Hard)
+        self.Hard = QAction(self.tr("Hard"),self)
+        self.Hard.triggered.connect(self.hardFunc)
+        self.file_menu.addAction(self.Hard)
         
         Ch = QAction("中文",self)
-        file_menu.addAction(Ch)
+        Ch.triggered.connect(self.ChineseFunc)
+        self.file_menu.addAction(Ch)
         
         En = QAction("English",self)
-        file_menu.addAction(En)
+        En.triggered.connect(self.EnglishFunc)
+        self.file_menu.addAction(En)
         
-        About = QAction(self.tr("About"),self)
-        file_menu.addAction(About)
+        self.About = QAction(self.tr("About"),self)
+        self.About.triggered.connect(self.aboutFunc)
+        self.file_menu.addAction(self.About)
         
-        quit = QAction(self.tr("Exit"),self) 
-        file_menu.addAction(quit)
-        file_menu.triggered[QAction].connect(self.processtrigger)
+        self.Quit = QAction(self.tr("Exit"),self) 
+        self.file_menu.addAction(self.Quit)
+        self.Quit.triggered.connect(self.quitFunc)
+        # self.file_menu.triggered[QAction].connect(self.processtrigger)
         
         # 添加退出动作
 #        exit_action = QAction('退出', self)
@@ -244,7 +281,67 @@ class MainWindow(QMainWindow):
         self.canvas.GameStop.connect(self.slot_StopMine)
         self.canvas.GameSetMineNumber.connect(self.slot_SetMineNumber)
         self.canvas.GameFail.connect(self.slot_GameFail)
+        
+    def ChineseFunc(self):
+        self.Language = 1
+        self.setText()
     
+    def EnglishFunc(self):
+        self.Language = 0
+        self.setText()
+    
+    def quitFunc(self):
+        quit()
+        
+    def easyFunc(self):
+        mainwidth = EASY_SCREEN_SIZE_W
+        mainheight = EASY_SCREEN_SIZE_H
+        self.setGeometry(100, 100, EASY_SCREEN_SIZE_W, EASY_SCREEN_SIZE_H)
+        self.InitChessman(CHESS_DIFFICULTY.Difficult_Easy)
+        self.canvas.updateCanvas()
+        self.slot_StopAndClearTimer()
+        self.button.setStyleSheet("QPushButton{\n"
+            "background-image: url(\"%s\");\n"
+            "background-position:center;\n"
+            "background-repeat:no-repeat;\n"
+            "}" % self.img_path_s1)
+
+    def middleFunc(self):
+        mainwidth = MID_SCREEN_SIZE_W
+        mainheight = MID_SCREEN_SIZE_H
+        self.setGeometry(100, 100, MID_SCREEN_SIZE_W, MID_SCREEN_SIZE_H)
+        self.InitChessman(CHESS_DIFFICULTY.Difficult_Middle)
+        self.canvas.updateCanvas()
+        self.slot_StopAndClearTimer()
+        self.button.setStyleSheet("QPushButton{\n"
+            "background-image: url(\"%s\");\n"
+            "background-position:center;\n"
+            "background-repeat:no-repeat;\n"
+            "}" % self.img_path_s1)
+            
+    def hardFunc(self):
+        mainwidth = HARD_SCREEN_SIZE_W
+        mainheight = HARD_SCREEN_SIZE_H
+        self.setGeometry(100, 100, HARD_SCREEN_SIZE_W, HARD_SCREEN_SIZE_H)
+        self.InitChessman(CHESS_DIFFICULTY.Difficult_Hard)
+        self.canvas.updateCanvas()
+        self.slot_StopAndClearTimer()
+        self.button.setStyleSheet("QPushButton{\n"
+            "background-image: url(\"%s\");\n"
+            "background-position:center;\n"
+            "background-repeat:no-repeat;\n"
+            "}" % self.img_path_s1)
+                
+    def aboutFunc(self):
+        trans = QTranslator()
+        if self.Language == 0:
+            trans.load('./en_us.qm')
+        else:
+            trans.load('./zh_CN.qm')
+        
+        self.app.installTranslator(trans)
+        QMessageBox.about(self,self.tr("About"),self.tr("1.0 version Copyright 03-28-2025 zhaoyong"))
+        
     def onTimer(self):
         self.counter = self.counter + 1
         self.lcd1.display(self.counter)
@@ -483,8 +580,6 @@ class MainWindow(QMainWindow):
         print(q.text()+" is triggered")
         if q.text() == "Exit":
             quit();
-        elif q.text() == 'About':
-            QMessageBox.about(self,self.tr("About"),self.tr("1.0 version Copyright 03-28-2025 zhaoyong"))
         elif q.text() == 'Easy':
             mainwidth = EASY_SCREEN_SIZE_W
             mainheight = EASY_SCREEN_SIZE_H
@@ -711,6 +806,14 @@ class CanvasWidget(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = MainWindow()
+    
+    trans = QTranslator()
+    trans.load('./en_us.qm')
+    
+    transCh = QTranslator()
+    transCh.load('./zh_CN.qm')
+    app.installTranslator(trans)
+    
+    window = MainWindow(app,trans,transCh)
     window.show()
     sys.exit(app.exec_())
