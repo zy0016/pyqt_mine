@@ -68,8 +68,6 @@ bh = 40;
 bw = bh;
 sChessmine = None
 level = CHESS_DIFFICULTY.Difficult_Easy
-mainwidth = EASY_SCREEN_SIZE_W
-mainheight = EASY_SCREEN_SIZE_H
 bMineDefeat = False
 #true:mine defeat,display game over,false:game doesn't over,
 iFindMineNumber = 0
@@ -301,8 +299,6 @@ class MainWindow(QMainWindow):
         self.Easy.setChecked(True)
         self.Middle.setChecked(False)
         self.Hard.setChecked(False)
-        mainwidth = EASY_SCREEN_SIZE_W
-        mainheight = EASY_SCREEN_SIZE_H
         self.setGeometry(100, 100, EASY_SCREEN_SIZE_W, EASY_SCREEN_SIZE_H)
         self.setFixedSize(EASY_SCREEN_SIZE_W, EASY_SCREEN_SIZE_H);
         self.InitChessman(CHESS_DIFFICULTY.Difficult_Easy)
@@ -318,8 +314,6 @@ class MainWindow(QMainWindow):
         self.Easy.setChecked(False)
         self.Middle.setChecked(True)
         self.Hard.setChecked(False)
-        mainwidth = MID_SCREEN_SIZE_W
-        mainheight = MID_SCREEN_SIZE_H
         self.setGeometry(100, 100, MID_SCREEN_SIZE_W, MID_SCREEN_SIZE_H)
         self.setFixedSize(MID_SCREEN_SIZE_W, MID_SCREEN_SIZE_H);
         self.InitChessman(CHESS_DIFFICULTY.Difficult_Middle)
@@ -335,8 +329,6 @@ class MainWindow(QMainWindow):
         self.Easy.setChecked(False)
         self.Middle.setChecked(False)
         self.Hard.setChecked(True)
-        mainwidth = HARD_SCREEN_SIZE_W
-        mainheight = HARD_SCREEN_SIZE_H
         self.setGeometry(100, 100, HARD_SCREEN_SIZE_W, HARD_SCREEN_SIZE_H)
         self.setFixedSize(HARD_SCREEN_SIZE_W, HARD_SCREEN_SIZE_H);
         self.InitChessman(CHESS_DIFFICULTY.Difficult_Hard)
@@ -420,7 +412,6 @@ class MainWindow(QMainWindow):
         bStartMine = False;
         level = chess_level;
         game_result = GAME_RESULT.PROGRESSING;
-        print("level:" + str(level))
         if level == CHESS_DIFFICULTY.Difficult_Easy:
             RowCount = CHESSNUM_EASY;
             ColCount = CHESSNUM_EASY;
@@ -475,7 +466,7 @@ class MainWindow(QMainWindow):
                 sChessmine[i][j].bMineType = True
                 sChessmine[i][j].iMineNum  = -1
                 iMinenum = iMinenum + 1
-        
+
         i = 0
         j = 0
         for i in range(chessnum):
@@ -574,16 +565,6 @@ class MainWindow(QMainWindow):
                     
                     sChessmine[i][j].iMineNum = iMineCount;
             
-        minucount = 0
-#        for i in range(chessnum):
-#            ss = ""
-#            for j in range(chessnum):
-#                ss = ss + "(" + str(sChessmine[i][j].iMineNum) + ")" + "\t"
-#                if sChessmine[i][j].iMineNum == -1:
-#                    minucount = minucount + 1
-#            print(ss)
-#        print("minucount:" + str(minucount))
-            
     def processtrigger(self,q):
         print(q.text()+" is triggered")
 
@@ -621,7 +602,6 @@ class CanvasWidget(QWidget):
     def MineOver(self):
         global bStartMine
         if bStartMine == False:
-            #print("The mine hasn't start")
             return
         bStartMine = False
         self.GameStop.emit("MineOver from CanvasWidget")
@@ -629,7 +609,6 @@ class CanvasWidget(QWidget):
     def BeginMine(self):
         global bStartMine
         if bStartMine:
-            #print("The mine has started!")
             return
         bStartMine = True
         self.GameStart.emit("BeginMine from CanvasWidget")
@@ -645,7 +624,6 @@ class CanvasWidget(QWidget):
             return
         irow = lst[0]
         icol = lst[1]
-        print("mousePressEvent,irow:" + str(irow) + " icol:" + str(icol))
         
         if self.IfGameOver():
             self.MineOver()
@@ -728,8 +706,6 @@ class CanvasWidget(QWidget):
         global game_result
         global bw
         global bh
-        iPicWidth = 30
-        iPicHeight = 30;
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
         
@@ -771,7 +747,6 @@ class CanvasWidget(QWidget):
                 print("emit gamefail();")
                 self.GameFail.emit("Game fail!")
                 self.MineOver()
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
