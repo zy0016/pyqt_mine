@@ -295,7 +295,7 @@ class MainWindow(QMainWindow):
         self.setText()
     
     def quitFunc(self):
-        quit()
+        QApplication.quit()
         
     def easyFunc(self):
         self.Easy.setChecked(True)
