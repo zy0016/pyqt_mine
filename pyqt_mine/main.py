@@ -304,6 +304,7 @@ class MainWindow(QMainWindow):
         mainwidth = EASY_SCREEN_SIZE_W
         mainheight = EASY_SCREEN_SIZE_H
         self.setGeometry(100, 100, EASY_SCREEN_SIZE_W, EASY_SCREEN_SIZE_H)
+        self.setFixedSize(EASY_SCREEN_SIZE_W, EASY_SCREEN_SIZE_H);
         self.InitChessman(CHESS_DIFFICULTY.Difficult_Easy)
         self.canvas.updateCanvas()
         self.slot_StopAndClearTimer()
@@ -320,6 +321,7 @@ class MainWindow(QMainWindow):
         mainwidth = MID_SCREEN_SIZE_W
         mainheight = MID_SCREEN_SIZE_H
         self.setGeometry(100, 100, MID_SCREEN_SIZE_W, MID_SCREEN_SIZE_H)
+        self.setFixedSize(MID_SCREEN_SIZE_W, MID_SCREEN_SIZE_H);
         self.InitChessman(CHESS_DIFFICULTY.Difficult_Middle)
         self.canvas.updateCanvas()
         self.slot_StopAndClearTimer()
@@ -336,6 +338,7 @@ class MainWindow(QMainWindow):
         mainwidth = HARD_SCREEN_SIZE_W
         mainheight = HARD_SCREEN_SIZE_H
         self.setGeometry(100, 100, HARD_SCREEN_SIZE_W, HARD_SCREEN_SIZE_H)
+        self.setFixedSize(HARD_SCREEN_SIZE_W, HARD_SCREEN_SIZE_H);
         self.InitChessman(CHESS_DIFFICULTY.Difficult_Hard)
         self.canvas.updateCanvas()
         self.slot_StopAndClearTimer()
